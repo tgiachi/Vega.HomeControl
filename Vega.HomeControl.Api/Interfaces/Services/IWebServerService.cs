@@ -7,10 +7,8 @@ using Vega.HomeControl.Api.Interfaces.Base.Services;
 
 namespace Vega.HomeControl.Api.Interfaces.Services
 {
-    public interface IScriptEngineService : IVegaService
+    public interface IWebServerService : IVegaService
     {
-        Task LoadString(string value);
-        Task LoadFile(string value);
-
+        Task Start();
     }
 }

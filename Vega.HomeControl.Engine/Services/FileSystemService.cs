@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 using Serilog;
 using Vega.HomeControl.Api.Data.Config.Root;
 using Vega.HomeControl.Api.Data.Directories;
+using Vega.HomeControl.Api.Data.Fs;
 using Vega.HomeControl.Api.Impl.Services;
 using Vega.HomeControl.Api.Interfaces.Services;
+using Vega.HomeControl.Api.Utils;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -88,7 +90,39 @@ namespace Vega.HomeControl.Engine.Services
                     CreateDirectory(directories[d]);
                 }
             }
-            
+        }
+
+        public string BuildDirectory(string directory)
+        {
+            var fullPath = Path.Combine(_rootDirectory, directory);
+
+            if (Path.GetExtension(directory) == "")
+                if (new DirectoryInfo(fullPath).IsDirectory())
+                    if (!Directory.Exists(fullPath))
+                        Directory.CreateDirectory(fullPath);
+
+            return fullPath;
+        }
+
+        public List<FileSystemObject> ScanDirectory(string directory, string filter = "*.*")
+        {
+            var result = new List<FileSystemObject>();
+            var fullDirectory = BuildDirectory(directory);
+            var files = Directory.GetFiles(fullDirectory, filter);
+
+            files.ToList().ForEach(f => {
+                var fileInfo = new FileInfo(f);
+
+                result.Add(new FileSystemObject {
+                    FileName = Path.GetFileName(f),
+                    FullFileName = f,
+                    LastModificationDateTime = fileInfo.LastWriteTime,
+                    FileSize = fileInfo.Length,
+                    HumanizedFileSize = ""
+                });
+            });
+
+            return result;
         }
     }
 }

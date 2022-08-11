@@ -15,29 +15,28 @@ namespace Vega.HomeControl.Api.Impl.Services
         public AbstractBaseVegaService(ILogger logger)
         {
             Logger = logger;
+
         }
 
-        public virtual void Dispose()
+        public virtual async void Dispose()
         {
             Logger.Debug("Disposing service {Service}", GetType().Name);
+            await Shutdown();
         }
 
-        public virtual ValueTask DisposeAsync()
+        public virtual async ValueTask DisposeAsync()
         {
             Logger.Debug("Disposing service async {Service}", GetType().Name);
-            return ValueTask.CompletedTask;
+            await Shutdown();
         }
 
-        public virtual Task Init()
-        {
-            Logger.Debug("Initializing service {Service}", GetType().Name);
-            return Task.CompletedTask;
-        }
+
 
         public virtual Task Shutdown()
         {
             Logger.Debug("Shutdown service {Service}", GetType().Name);
             return Task.CompletedTask;
+
         }
     }
 }

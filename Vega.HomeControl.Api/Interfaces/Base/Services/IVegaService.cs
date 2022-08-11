@@ -8,8 +8,6 @@ namespace Vega.HomeControl.Api.Interfaces.Base.Services
 {
     public interface IVegaService : IDisposable, IAsyncDisposable
     {
-        Task Init();
-
         Task Shutdown();
     }
 }

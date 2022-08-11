@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Vega.HomeControl.Api.Data.Directories;
+using Vega.HomeControl.Api.Data.Fs;
 using Vega.HomeControl.Api.Interfaces.Base.Services;
 
 namespace Vega.HomeControl.Api.Interfaces.Services
@@ -18,5 +19,6 @@ namespace Vega.HomeControl.Api.Interfaces.Services
         Task WriteFileAsYamlAsync(string directory, string fileName, object content);
         Task<TData> ReadFileAsJsonAsync<TData>(string directory, string fileName);
         Task<TData> ReadFileAsYamlAsync<TData>(string directory, string fileName);
+        List<FileSystemObject> ScanDirectory(string directory, string filter = "*.*");
     }
 }

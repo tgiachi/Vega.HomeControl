@@ -16,7 +16,10 @@ namespace Vega.HomeControl.Engine.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-        //    builder.RegisterType<EventBusService>().As<IEventBusService>().SingleInstance();
+            builder.RegisterType<ScriptEngineService>().As<IScriptEngineService>().SingleInstance();
+            builder.RegisterType<SchedulerService>().As<ISchedulerService>().SingleInstance().AutoActivate();
+            builder.RegisterType<WebServerService>().As<IWebServerService>().SingleInstance();
+            builder.RegisterType<VaultService>().As<IVaultService>().SingleInstance();
 
             base.Load(builder);
         }

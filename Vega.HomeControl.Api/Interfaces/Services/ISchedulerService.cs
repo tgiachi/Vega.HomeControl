@@ -7,10 +7,10 @@ using Vega.HomeControl.Api.Interfaces.Base.Services;
 
 namespace Vega.HomeControl.Api.Interfaces.Services
 {
-    public interface IScriptEngineService : IVegaService
+    public interface ISchedulerService : IVegaService
     {
-        Task LoadString(string value);
-        Task LoadFile(string value);
+        void AddJob(string name, Action action, int seconds, bool runOnce);
 
+        void RemoveJob(string name);
     }
 }

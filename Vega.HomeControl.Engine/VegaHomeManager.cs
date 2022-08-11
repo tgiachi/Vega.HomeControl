@@ -28,7 +28,7 @@ namespace Vega.HomeControl.Engine
     public class VegaHomeManager
     {
         private readonly ContainerBuilder _containerBuilder;
-       
+
         private readonly IFileSystemService _fileSystemService;
         private IContainer _container;
         private SystemDirectories _systemDirectories;
@@ -62,9 +62,20 @@ namespace Vega.HomeControl.Engine
             Log.Logger.Information("Root directory: {RootDirectory}", _rootDirectory);
             var eventBus = _container.Resolve<IEventBusService>();
 
+            _container.Resolve<IScriptEngineService>();
+
             eventBus.PublishNotification(new VegaNotificationEvent<ApplicationReadyEvent>(GetType().Name, new ApplicationReadyEvent()));
 
-            return Task.CompletedTask;
+            PrintHeader();
+
+            return _container.Resolve<IWebServerService>().Start();
+        }
+
+        private void PrintHeader()
+        {
+            var engineAssembly = typeof(DefaultServiceModuleLoader).Assembly;
+            var isRunningOnDocker = Environment.GetEnvironmentVariable("IS_DOCKER") != null;
+            _logger.Information("Vega Home Control v{Version} - OS: {Os} - isRunningOnDocker: {RunningOnDocker}", engineAssembly.GetName().Version, OsUtils.GetOs(), isRunningOnDocker);
         }
 
         private void InitConfig()
@@ -82,14 +93,12 @@ namespace Vega.HomeControl.Engine
                 _logger.Information("Application not configured saving default config");
                 _vegaConfig.Common.IsConfigured = true;
                 //_vegaConfig.Assemblies.AssembliesToLoad = new List<string>();
-
             }
         }
 
         private void InitializeSystemDirectories()
         {
-            _systemDirectories = new SystemDirectories
-            {
+            _systemDirectories = new SystemDirectories {
                 [SystemDirectoryType.Root] = _rootDirectory,
             };
 

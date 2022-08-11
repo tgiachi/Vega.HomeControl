@@ -25,6 +25,11 @@ namespace Vega.HomeControl.Api.Data.Directories
         {
             return _directories.Keys.ToList();
         }
+
+        public string GetFullPath(SystemDirectoryType directoryType)
+        {
+            return Path.Join(this[SystemDirectoryType.Root], this[directoryType]);
+        }
     }
 
     public enum SystemDirectoryType
@@ -33,6 +38,7 @@ namespace Vega.HomeControl.Api.Data.Directories
         Configs,
         Plugins,
         Scripts,
+        Packages,
         Logs
     }
 }
