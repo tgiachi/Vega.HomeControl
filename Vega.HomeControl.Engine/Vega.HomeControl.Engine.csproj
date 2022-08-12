@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Vega.HomeControl.Api\Vega.HomeControl.Api.csproj" />
+    <ProjectReference Include="..\Vega.HomeControl.Components\Vega.HomeControl.Components.csproj" />
   </ItemGroup>
 
   <ItemGroup>

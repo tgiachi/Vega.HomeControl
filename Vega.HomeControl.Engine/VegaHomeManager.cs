@@ -17,8 +17,11 @@ using Vega.HomeControl.Api.Data.Config.Root;
 using Vega.HomeControl.Api.Data.Directories;
 using Vega.HomeControl.Api.Data.Events.Application;
 using Vega.HomeControl.Api.Data.Events.Impl;
+using Vega.HomeControl.Api.Impl.Modules;
+using Vega.HomeControl.Api.Interfaces.Modules;
 using Vega.HomeControl.Api.Interfaces.Services;
 using Vega.HomeControl.Api.Utils;
+using Vega.HomeControl.Components.Test;
 using Vega.HomeControl.Engine.Modules;
 using Vega.HomeControl.Engine.Services;
 using Module = Autofac.Module;
@@ -41,6 +44,8 @@ namespace Vega.HomeControl.Engine
         public VegaHomeManager()
         {
             AssemblyUtils.AddAssembly(typeof(DefaultServiceModuleLoader).Assembly);
+            AssemblyUtils.AddAssembly(typeof(TestComponent).Assembly);
+
 
             _rootDirectory = Environment.GetEnvironmentVariable("VEGA_HOME_DIRECTORY") ??
                              Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VegaHome");
@@ -80,9 +85,9 @@ namespace Vega.HomeControl.Engine
 
         private void InitConfig()
         {
-            _logger.Information("Loading config vega.json");
+            _logger.Information("Loading config vega.config.json");
 
-            var configStore = new JsonConfigStore(Path.Join(_rootDirectory, _systemDirectories[SystemDirectoryType.Configs], "vega.json"), true);
+            var configStore = new JsonConfigStore(Path.Join(_rootDirectory, _systemDirectories[SystemDirectoryType.Configs], "vega.config.json"), true);
             _vegaConfig = new ConfigurationBuilder<IVegaConfig>()
                 .UseEnvironmentVariables()
                 .UseConfigStore(configStore)
@@ -166,12 +171,14 @@ namespace Vega.HomeControl.Engine
             {
                 try
                 {
+
                     _logger.Information("Loading module: {Module}", module.Name);
-                    _containerBuilder.RegisterModule((Activator.CreateInstance(module) as Module)!);
+                    _containerBuilder.RegisterModule((Activator.CreateInstance(module, Log.Logger.ForContext(module)) as VegaModule)!);
+
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error("Error during module: {Module}, are you sure have implemented Module class from Autofac?: {Err}", module.FullName, ex);
+                    _logger.Error("Error during module: {Module}, are you sure have implemented Module class from IVegaModule?: {Err}", module.FullName, ex);
                 }
             }
 
