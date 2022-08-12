@@ -24,6 +24,7 @@ namespace Vega.HomeControl.Engine.Modules
             builder.RegisterType<ComponentService>().As<IComponentService>().SingleInstance();
             builder.RegisterType<VaultService>().As<IVaultService>().SingleInstance();
             builder.RegisterType<ComponentService>().As<IComponentService>().SingleInstance().AutoActivate();
+            builder.RegisterType<DatabaseService>().As<IDatabaseService>().SingleInstance().AutoActivate();
 
             base.Load(builder);
         }
