@@ -36,6 +36,7 @@ namespace Vega.HomeControl.Api.Data.Directories
     {
         Root,
         Configs,
+        Database,
         Plugins,
         Scripts,
         Packages,
